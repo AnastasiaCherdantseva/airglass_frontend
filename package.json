@@ -1,0 +1,36 @@
+{
+  "name": "airglass-frontend",
+  "version": "0.1.0",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "vitest",
+    "test:run": "vitest run"
+  },
+  "dependencies": {
+    "vue": "^3.3.4",
+    "@vueuse/core": "^14.4.0",
+    "vue-router": "^4.6.4",
+    "vuedraggable": "^4.1.0",
+    "vue-input-facade": "^2.2.0",
+    "axios": "^1.13.4",
+    "pinia": "^3.0.4"
+  },
+ "devDependencies": {
+    "vite": "^7.3.1",
+    "happy-dom": "^14.12.3",
+    "@vitejs/plugin-vue": "^6.0.0",
+    "@vitest/coverage-v8": "^4.0.18",
+    "@vue/test-utils": "^2.4.6",
+    "typescript": "~5.9.3",
+    "@tsconfig/node24": "^24.0.3",
+    "@types/node": "^24.10.4",
+    "jiti": "^2.6.1",
+    "eslint": "^9.39.2",
+    "eslint-plugin-vue": "~10.6.2",
+    "@vue/eslint-config-typescript": "^14.6.0",
+    "@vue/tsconfig": "^0.8.1",
+    "vue-tsc": "^3.2.1"
+}
+}
