@@ -29,6 +29,8 @@ yarn-error.log*
 *.swp
 *.swo
 
+.env
+
 
 Dockerfile
 Dockerfile.prod
