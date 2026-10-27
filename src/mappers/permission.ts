@@ -9,7 +9,7 @@ export function mapPermissionWithConditionsRES2Model(data:PermissionWithConditio
             id:c.id,             
             permissionId:c.permission_id,
             type:c.type,
-            effect: c.effect,
+            // effect: c.effect,
             isActive:c.is_active,
             categoryId:c.category_id,
             mediaTypeId:c.media_type_id,
