@@ -1,10 +1,10 @@
-import { ConditionType, PermissionEffect } from "../enums";
+import { ConditionType } from "../enums";
 
 interface PermissionCondition {
   id: string;             // UUID
   permissionId: string;  // UUID
   type: ConditionType;
-  effect: PermissionEffect;
+  // effect: PermissionEffect;
   isActive: boolean;
 }
 
