@@ -1,5 +1,6 @@
+import { useAuthStore } from '@/stores/authStore.ts';
 import { createRouter, createWebHistory } from 'vue-router'
-// import { useAuthStore,useRoleStore } from '@/stores'
+// import { useAuthStore} from '@/stores'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -15,12 +16,46 @@ const router = createRouter({
      component: () => import('../views/login.vue'),
      meta: { requiresGuest: true }
     },
+    {
+    path: '/home',
+     name: 'home',
+     component: () => import('../views/public/home.vue'),
+     meta: { requiresAuth: true },
+     children:[
+       {
+            path: '/users',
+            name: 'users',
+            component: () => import('@/views/public/UsersView.vue'),
+            meta: { accessCode: 'USERS.READ' },
+        },
+     ]
+    },
 ]
 })
 
 
 // Навигационный guard (проверка перед каждым переходом)
-// router.beforeEach(async (to, from, next) => {
-   
-// });
+router.beforeEach((to, from) => {
+   const authStore = useAuthStore();
+   // Залогиненый пользователь пытается зайти на страницу для гостей
+   if (to.meta.requiresGuest && authStore.isAuthenticated) 
+      return '/home';
+
+    // Незалогиненный пользователь пытается зайти на внутренние страницы
+    if(to.meta.requiresAuth && !authStore.isAuthenticated ){  
+      return { path: '/auth', query: { redirect: to.fullPath } };
+    }
+    if(to.meta.accessCode){
+      const hasAccess = authStore.can(to.meta.accessCode as string);
+      if (hasAccess) {
+        return;
+      } else {
+        if (to.path !== '/home') {
+          return '/home';
+        }
+        return; 
+      }
+    }
+    return true
+});
 export default router
