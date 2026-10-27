@@ -32,14 +32,18 @@
 import { ref } from 'vue';
 import {Card,Button} from 'primevue'
 import loginForm from '@/components/forms/loginForm.vue';
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 const router = useRouter()
+const route = useRoute();
 const isAuthSuccess = ref<boolean | null>(null);
 
 function auth(res:boolean){
   isAuthSuccess.value = res
   if(isAuthSuccess.value){
-    router.push('/home')
+    const redirect = route.query.redirect;
+    const target = typeof redirect === 'string' ? redirect : '/home';
+
+    router.push(target);
   } 
 }
 
