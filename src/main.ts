@@ -7,26 +7,13 @@ import 'primeicons/primeicons.css'
 import './assets/css/main.css'
 
 import PrimeVue from 'primevue/config'
-import Lara from '@primevue/themes/lara' 
+import Lara from '@primevue/themes/lara'
 import { definePreset } from '@primevue/themes'
 
-// const EmeraldPreset = definePreset(Lara, {
-//     semantic: {
-//         primary: {
-//             50: '#ecfdf5',
-//             100: '#d1fae5',
-//             200: '#a7f3d0',
-//             300: '#6ee7b7',
-//             400: '#34d399',
-//             500: '#10b981',   // ← Изумрудный (основной)
-//             600: '#059669',
-//             700: '#047857',
-//             800: '#065f46',
-//             900: '#064e3b',
-//             950: '#022c22'
-//         }
-//     }
-// })
+import { useAuthStore } from '@/stores/authStore.ts'   // ← добавлено
+import ToastService from 'primevue/toastservice'
+import ConfirmationService from 'primevue/confirmationservice'
+// const EmeraldPreset = definePreset(Lara, { ... })
 
 const NoirPreset = definePreset(Lara, {
     semantic: {
@@ -48,11 +35,13 @@ const NoirPreset = definePreset(Lara, {
 
 const app = createApp(App)
 
-app.use(createPinia())
+// Pinia нужно создать и подключить ДО использования стора
+const pinia = createPinia()
+app.use(pinia)
 
 app.use(PrimeVue, {
     theme: {
-        preset: NoirPreset, 
+        preset: NoirPreset,
         options: {
             darkModeSelector: '.my-app-dark',
             cssLayer: {
@@ -63,5 +52,11 @@ app.use(PrimeVue, {
     },
     license: import.meta.env.VITE_PRIMEUI_LICENSE
 })
+app.use(ToastService) 
+app.use(ConfirmationService) 
+// ─── Восстанавливаем сессию один раз при старте ───
+const authStore = useAuthStore(pinia)   // ← передаём pinia явно
+await authStore.checkAuth()
+
 app.use(router)
 app.mount('#app')
