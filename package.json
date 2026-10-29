@@ -16,7 +16,7 @@
     "axios": "^1.13.4",
     "pinia": "^3.0.4",
     "primeicons": "^8.0.0",
-    "primevue": "^5.0.1",
+    "primevue": "^5.0.4",
     "tailwindcss": "^4.3.3",
     "tailwindcss-primeui": "^0.6.1",
     "vue": "^3.3.4",
