@@ -1,10 +1,8 @@
 import { computed, ref } from 'vue'
 import { UserCreate, UserFull } from '@/types/models'
 import { useUserStore } from '@/stores/userStore'
-
-function getErrorMessage(error: unknown, fallback: string): string {
-  return error instanceof Error && error.message ? error.message : fallback
-}
+import { getErrorMessage } from '@/utils/errors'
+import { nextTick } from 'vue'
 
 export function useUsers(initialLimit = 10) {
   const users = ref<UserFull[]>([])
@@ -33,6 +31,7 @@ export function useUsers(initialLimit = 10) {
       if (current !== requestId) return
       error.value = getErrorMessage(e, 'Не удалось загрузить пользователей')
     } finally {
+      await nextTick()
       if (current === requestId) {
         loading.value = false
         loaded.value = true
