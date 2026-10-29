@@ -17,18 +17,36 @@ const router = createRouter({
      meta: { requiresGuest: true }
     },
     {
-    path: '/home',
+     path: '/home',
      name: 'home',
      component: () => import('../views/public/home.vue'),
      meta: { requiresAuth: true },
      children:[
-       {
-            path: '/users',
-            name: 'users',
-            component: () => import('@/views/public/UsersView.vue'),
-            meta: { accessCode: 'USERS.READ' },
-        },
+      {
+        path: '', 
+        name: 'usersLayout',
+        component: () => import('@/views/public/users/UsersLayout.vue'),
+        children:[
+          {
+               path: '/users',
+               name: 'users',
+               component: () => import('@/views/public/users/UsersView.vue'),
+               meta: { accessCode: 'USERS.READ' },
+           },
+          {
+               path: '/roles',
+               name: 'roles',
+               component: () => import('@/views/public/users/RolesView.vue'),
+               meta: { accessCode: 'ROLES.READ' },
+           },
+        ],
+      },
      ]
+    },{
+     path: '/helth',
+     name: 'helth',
+     component: () => import('../views/helth.vue'),
+     
     },
 ]
 })
