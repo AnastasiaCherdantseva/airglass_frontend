@@ -8,7 +8,7 @@ import { ConditionType } from "@/types/enums";
 export const useAuthStore = defineStore('auth', {
     state: () => ({
         me: null as User | null,
-        permissions: [] as PermissionWithConditions[],
+        permissions: {} as Record<string, PermissionWithConditions>,
         permissionCodes : new Set() as Set<string>,
         hasAdminAccess: false,
         isAuthenticated: false,
@@ -37,15 +37,20 @@ export const useAuthStore = defineStore('auth', {
                         emailVerified: res.data.email_verified
                     }
                     this.hasAdminAccess = res.data.has_admin_access
-                    this.permissions = res.data.permissions.map(p=> mapPermissionWithConditionsRES2Model(p))  
-                    this.permissionCodes =  new Set(this.permissions.map(p=>p.code))
+                    this.permissions = Object.fromEntries(
+                    res.data.permissions.map((p) => [
+                        p.code,
+                        mapPermissionWithConditionsRES2Model(p),
+                    ]),
+                    ) as Record<string, PermissionWithConditions>;  
+                    this.permissionCodes =  new Set(Object.keys(this.permissions))
                     this.isAuthenticated = true
                     return true
                 }
                 else throw new Error();
             }catch{
                 this.me = null 
-                this.permissions = []
+                this.permissions = {}
                 this.hasAdminAccess= false
                 this.isAuthenticated = false
                 return false
@@ -57,8 +62,8 @@ export const useAuthStore = defineStore('auth', {
         canWithCondition(code: string, type:ConditionType, UUID:string | null): boolean {
             const can = this.permissionCodes.has(code)
             if (!can) return false
-            const perm = this.permissions.find(p=> p.code == code)
-            if (perm == undefined) return false 
+            const perm = this.permissions[code]
+            if (perm == undefined || perm == null) return false 
             switch(type){
                 case ConditionType.Category:
                     return perm?.conditions.find(c=>c.categoryId==UUID) !== undefined
