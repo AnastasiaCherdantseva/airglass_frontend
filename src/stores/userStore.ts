@@ -36,7 +36,7 @@ export const useUserStore = defineStore('user', {
                 return this.users.slice(start,end)
             } catch (error) {
                 if (error instanceof Error) {
-                    console.error('getUsers failed:', error);
+                    console.error('getUsers failed:', error.message);
                 }
                 throw error;
             }
@@ -54,7 +54,7 @@ export const useUserStore = defineStore('user', {
                 return newUser
             } catch (error) {
                 if (error instanceof Error) {
-                    console.error('createUser failed:', error);
+                    console.error('createUser failed:', error.message);
                 }
                 throw error;
             }
@@ -70,7 +70,7 @@ export const useUserStore = defineStore('user', {
                 this.total--
             } catch (error) {
                 if (error instanceof Error) {
-                    console.error('deleteUser failed:', error);
+                    console.error('deleteUser failed:', error.message);
                 }
                 throw error;
             }
