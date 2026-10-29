@@ -5,7 +5,7 @@ export interface createUserFormErrors {
   email?: { message: string }[]
   name?: { message: string }[]
   password?: { message: string }[]
-  role_ids?: { message: string }[]
+  roleIds?: { message: string }[]
 }
 
 export const resolver= (options: { values: Record<string, any> }) => {
@@ -19,7 +19,7 @@ export const resolver= (options: { values: Record<string, any> }) => {
     errors.password = [{ message: 'Минимум 8 символов' }];
   }
   if (!values.roleIds || values.password.length<1) {
-    errors.password = [{ message: 'Выберите хотя бы одну роль' }];
+    errors.roleIds = [{ message: 'Выберите хотя бы одну роль' }];
   }
   if (!values.name) {
     errors.name = [{ message: 'Введите имя' }];
