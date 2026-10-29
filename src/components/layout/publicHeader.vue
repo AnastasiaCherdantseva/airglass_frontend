@@ -31,7 +31,6 @@ import {useAuthStore} from '@/stores/authStore';
 import {PermissionResource, PermissionAction} from '@/types/enums'
 import Users from '@primeicons/vue/users';
 const AuthStore=useAuthStore();
-const permissions = AuthStore.permissions;
 const items = ref ([
     {
         label:'Настройки профиля'
@@ -51,9 +50,7 @@ function hasPermission(
   action: PermissionAction,
 ): boolean {
   const code = `${resource}.${action}`;
-  const c = permissions.some(p => p.code === code);
-  console.log(code)
-  return c
+  return AuthStore.can(code)
 }
 
 
