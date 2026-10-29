@@ -4,3 +4,18 @@
 body, #app{
     min-height: 100vh;
 }
+
+
+.p-sidebar {
+  --px-sidebar-width: 12rem !important;      /* ваша ширина */
+  --px-sidebar-width-icon: 2.5rem !important;  /* ваша свёрнутая ширина */
+}
+.p-sidebar[data-state="collapsed"] span {
+  display: none;
+}
+.p-sidebar[data-state="collapsed"] .p-sidebar-menu-button {
+  justify-content: center !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  width: 100% !important;
+}
