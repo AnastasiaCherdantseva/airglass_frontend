@@ -19,3 +19,7 @@ body, #app{
   padding-right: 0 !important;
   width: 100% !important;
 }
+
+:root {
+  --p-tag-font-size: 0.65rem; /* или 10px, или любое нужное значение */
+}

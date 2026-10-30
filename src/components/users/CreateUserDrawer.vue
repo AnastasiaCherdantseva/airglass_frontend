@@ -124,7 +124,7 @@
     import { Form } from '@primevue/forms'
     import type { FormSubmitEvent } from '@primevue/forms'
     import { resolver,} from '@/schemas/createUserSchema'
-    import type { Role, RoleFull, UserCreate } from '@/types/models'
+    import type { UserCreate } from '@/types/models'
     import {useRoles} from '@/composables/useRoles'
 
     const props = defineProps<{
@@ -133,8 +133,7 @@
       serverError: string | null
     }>()
 
-    const {roles,loading, rolesWithAssing, load} = useRoles()
-    load()
+    const {loading, rolesWithAssing} = useRoles()
 
     const emit = defineEmits<{
     (e: 'update:visible', value: boolean): void
@@ -153,11 +152,10 @@
     )
 
     function onSubmit(event: FormSubmitEvent<Record<string, any>>): void {
-    if (!event.valid) return;
+      if (!event.valid) return;
 
-  // Приводим values к вашему типу
-    const data = event.values as UserCreate;
-    console.log('sfdff',data)
-    emit('submit', data)
+    // Приводим values к вашему типу
+      const data = event.values as UserCreate;
+      emit('submit', data)
     }
 </script>
