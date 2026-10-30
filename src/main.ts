@@ -10,9 +10,10 @@ import PrimeVue from 'primevue/config'
 import Lara from '@primevue/themes/lara'
 import { definePreset } from '@primevue/themes'
 
-import { useAuthStore } from '@/stores/authStore.ts'   // ← добавлено
+import { useAuthStore } from '@/stores/authStore.ts' 
 import ToastService from 'primevue/toastservice'
 import ConfirmationService from 'primevue/confirmationservice'
+import { vFitChildren } from '@ozjsey/v-fit-children'
 // const EmeraldPreset = definePreset(Lara, { ... })
 
 const NoirPreset = definePreset(Lara, {
@@ -59,4 +60,5 @@ const authStore = useAuthStore(pinia)   // ← передаём pinia явно
 await authStore.checkAuth()
 
 app.use(router)
+app.directive('fit-children', vFitChildren)
 app.mount('#app')

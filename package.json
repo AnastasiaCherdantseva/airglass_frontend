@@ -9,6 +9,7 @@
     "test:run": "vitest run"
   },
   "dependencies": {
+    "@ozjsey/v-fit-children": "^2.3.3",
     "@primevue/forms": "^5.0.1",
     "@primevue/themes": "^4.5.4",
     "@tailwindcss/vite": "^4.3.3",
