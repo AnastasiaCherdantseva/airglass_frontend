@@ -26,39 +26,28 @@
           </div>
 
           <!-- Пустое состояние -->
-          <UsersEmptyState v-else-if="isEmpty" :can-create="canCreate" @create="openDrawer" />
+          <EmptyState v-else-if="isEmpty" 
+              :can-create="canCreate" 
+              :textHeader="'Пользователей пока нет.'"
+              :canCreateText="'Создайте своего первого пользоватлея.'"
+              @create="openDrawer" />
 
           <!-- Контент -->
           <template v-else-if="showContent">
             <div class="flex w-full justify-between pb-2">
               <div class="flex justify-start">
-                <SelectButton
-                v-model="viewMode"
-                size="small"
-                :options="viewOptions"
-                option-label="label"
-                option-value="value"
-                :allow-empty="false"
-                aria-label="Режим отображения"
-                  >
-                    <template #option="{ option }">
-                      <span class="flex items-center gap-2 text-sm">
-                        <i :class="option.icon" />
-                        {{ option.label }}
-                      </span>
-                    </template>
-                </SelectButton>
+                <ViewMode :default="viewMode" @update:modelValue="(val:ViewModeType) => viewMode=val"/>
               </div>
               <div class="flex justify-end">
                 <Button
                   v-if="canCreate && !isEmpty"
-                  label="Создать пользователя"
-                  icon="pi pi-plus-circle"
+                  label="Добавить"
+                  icon="pi pi-plus"
                   size="small"
+                  class="px-5! py-0!"
                   @click="openDrawer"
                 />
               </div>
-
             </div>
 
             <div class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
@@ -82,7 +71,9 @@
                 </Column>
                 <Column field="status" header="Статус">
                   <template #body="{ data }">
-                    <UserStatusBadge :status="getUserStatus(data)" />
+                    <StatusBadge 
+                    :status="getUserStatus(data)"
+                    :labels="{ active: 'Активен', pending: 'Ожидает подтверждения', inactive: 'Не активен' }" />
                   </template>
                 </Column>
                 <Column field="children" header="Подчинённые">
@@ -95,7 +86,8 @@
                 </Column>
                 <Column field="actions" header="Действия" header-class="w-32">
                   <template #body="{ data }">
-                    <UserActions
+                    <TableActions
+                      :can-change="canUpdate"
                       :can-delete="canDelete"
                       :delete-disabled="deletingId !== null"
                       :deleting="deletingId === data.id"
@@ -131,8 +123,6 @@
           </template>
     <CreateUserDrawer
       v-model:visible="drawerVisible"
-      :roles="roles"
-      :roles-loading="rolesLoading"
       :submitting="submitting"
       :server-error="serverError"
       @submit="handleCreate"
@@ -145,25 +135,24 @@
       Column,
       DataTable,
       Message,
-      SelectButton,
       Skeleton,
     } from 'primevue';
     import { useConfirm, useToast } from 'primevue'
     import CreateUserDrawer from '@/components/users/CreateUserDrawer.vue'
-    import UserActions from '@/components/users/UserActions.vue'
+    import TableActions from '@/components/layout/table/TableActions.vue'
     import UserCard from '@/components/users/UserCard.vue'
     import UserIdentity from '@/components/users/UserIdentity.vue'
     import UserRoleTags from '@/components/users/UserRoleTags.vue'
-    import UsersEmptyState from '@/components/users/UsersEmptyState.vue'
+    import EmptyState from '@/components/layout/EmptyState.vue'
+    import ViewMode from '@/components/layout/buttons/ViewMode.vue'
+    import type {ViewModeType} from '@/components/layout/buttons/ViewMode.vue'
     import UsersPagination from '@/components/users/UsersPagination.vue'
-    import UserStatusBadge from '@/components/users/UserStatusBadge.vue'
+    import StatusBadge from '@/components/layout/table/StatusBadge.vue'
     import { useRoles } from '@/composables/useRoles'
     import { useUsers } from '@/composables/useUsers'
     import { useAuthStore } from '@/stores/authStore'
     import type { UserCreate, UserFull } from '@/types/models'
     import { getUserStatus } from '@/utils/user'
-    
-    type ViewMode = 'table' | 'cards'
     
     const auth = useAuthStore()
     const toast = useToast()
@@ -184,13 +173,9 @@
         remove,
     } = useUsers(10)
     
-    const { roles, loading: rolesLoading, load: loadRoles } = useRoles()
+    const { roles, load: loadRoles} = useRoles()
     
-    const viewMode = ref<ViewMode>('table')
-    const viewOptions: { label: string; value: ViewMode; icon: string }[] = [
-    { label: 'Таблица', value: 'table', icon: 'pi pi-table' },
-    { label: 'Карточки', value: 'cards', icon: 'pi pi-th-large' },
-    ]
+    const viewMode = ref<ViewModeType>('table')
     
     const drawerVisible = ref(false)
     const submitting = ref(false)
@@ -198,6 +183,7 @@
     
     const canCreate = computed(() => auth.can('USERS.CREATE'))
     const canDelete = computed(() => auth.can('USERS.DELETE'))
+    const canUpdate = computed(() => auth.can('USERS.UPDATE'))
     
     const isEmpty = computed(
     () => loaded.value && !error.value && page.value === 1 && users.value.length === 0,
