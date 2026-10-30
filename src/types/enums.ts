@@ -13,10 +13,11 @@ export enum PermissionResource {
   AuditLog = 'AUDIT_LOG',
 }
 
+
 export const PermissionResourceRUS: Record<PermissionResource, string> = {
   [PermissionResource.Users]: 'Пользователи',
   [PermissionResource.Roles]: 'Роли',
-  [PermissionResource.Products]: 'Продукты',
+  [PermissionResource.Products]: 'Товары',
   [PermissionResource.Categories]: 'Категории',
   [PermissionResource.Templates]: 'Шаблоны',
   [PermissionResource.Projects]: 'Проекты',
@@ -37,7 +38,16 @@ export enum PermissionAction {
   Export = 'EXPORT',
   Import = 'IMPORT',
 }
+export const PermissionActionRUS: Record<PermissionAction, string> = {
+  [PermissionAction.Create]: 'Создание',
+  [PermissionAction.Read]: 'Чтение',
+  [PermissionAction.Update]: 'Редактирование',
+  [PermissionAction.Delete]: 'Удаление',
+  [PermissionAction.Archive]: 'Архивирование',
+  [PermissionAction.Export]: 'Экспорт данных',
+  [PermissionAction.Import]: 'Импорт данных',
 
+}
 export enum PermissionZone {
   Public = 'PUBLIC',
   Admin = 'ADMIN',
@@ -56,7 +66,7 @@ export enum ConditionType {
 //   Allow = 'ALLOW',
 //   Deny = 'DENY',
 // }
-export enum UserStatus {
+export enum Status {
   Active = 'active',
   Inactive = 'inactive',
   Pending = 'pending',

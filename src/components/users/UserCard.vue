@@ -5,7 +5,7 @@
   >
     <div class="flex items-start justify-between gap-2">
       <UserIdentity :user="user" />
-      <UserActions
+      <TableActions
         :can-delete="canDelete"
         :delete-disabled="deleting"
         :deleting="deleting"
@@ -14,7 +14,7 @@
     </div>
     <UserRoleTags :role-ids="user.roleIds" :roles="roles" />
     <div class="flex items-center justify-between text-sm">
-      <UserStatusBadge :status="getUserStatus(user)" />
+      <StatusBadge :status="getUserStatus(user)" :labels="{ active: 'Активен', pending: 'Ожидает подтверждения', inactive: 'Не активен' }" />
       <span class="inline-flex items-center gap-1.5 text-slate-600" title="Подчинённые">
         <i class="pi pi-user text-slate-400" />
         {{ user.childrenCount }}
@@ -24,10 +24,10 @@
 </template>
     
 <script setup lang="ts">
-    import UserActions from '@/components/users/UserActions.vue'
+    import TableActions from '@/components/layout/table/TableActions.vue'
     import UserIdentity from '@/components/users/UserIdentity.vue'
     import UserRoleTags from '@/components/users/UserRoleTags.vue'
-    import UserStatusBadge from '@/components/users/UserStatusBadge.vue'
+    import StatusBadge from '@/components/layout/table/StatusBadge.vue'
     import { getUserStatus } from '@/utils/user'
     import type { Role, UserFull } from '@/types/models'
     

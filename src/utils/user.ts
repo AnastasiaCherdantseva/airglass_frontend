@@ -1,4 +1,4 @@
-import { UserStatus } from "@/types/enums"
+import { Status } from "@/types/enums"
 import { User } from "@/types/models"
 
 export function getInitials(name: string): string {
@@ -30,7 +30,7 @@ export function getInitials(name: string): string {
 //   return AVATAR_PALETTE[hash % AVATAR_PALETTE.length] ?? AVATAR_PALETTE[0]!
 // }
 
-export function getUserStatus(user: Pick<User, 'isActive'| 'emailVerified'>): UserStatus {
-    if (!user.emailVerified) return UserStatus.Pending
-  return user.isActive ? UserStatus.Active : UserStatus.Inactive
+export function getUserStatus(user: Pick<User, 'isActive'| 'emailVerified'>): Status {
+    if (!user.emailVerified) return Status.Pending
+  return user.isActive ? Status.Active : Status.Inactive
 }
