@@ -3,7 +3,15 @@
   <div class="flex items-center gap-1">
     <!-- PATCH /users/{id} пока нет на бэке: кнопка всегда disabled -->
     <span title="Редактирование пока недоступно">
-      <Button icon="pi pi-pencil" severity="secondary" text rounded size="small" disabled aria-label="Редактировать" />
+      <Button 
+        v-if ="canChange"
+        icon="pi pi-pencil" 
+        severity="secondary" 
+        text 
+        rounded 
+        size="small" 
+        disabled 
+        aria-label="Редактировать" />
     </span>
     <Button
       v-if="canDelete"
@@ -25,6 +33,7 @@
       
       defineProps<{
         canDelete: boolean
+        canChange?: boolean
         deleteDisabled: boolean
         deleting: boolean
       }>()
