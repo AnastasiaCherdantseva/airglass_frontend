@@ -12,7 +12,7 @@
           <!-- Скелетон -->
           <div
             v-else-if="showSkeleton"
-            class="flex flex-col gap-4 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm"
+            class="flex flex-col gap-4 rounded-sm border border-slate-200 bg-white p-4 shadow-sm"
           >
             <div v-for="i in 5" :key="i" class="flex items-center gap-4">
               <Skeleton shape="circle" size="2.5rem" />
@@ -50,7 +50,7 @@
               </div>
             </div>
 
-            <div class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+            <div class="overflow-hidden rounded-sm border border-slate-200 bg-white shadow-sm">
               <!-- Таблица -->
               <DataTable
                 v-if="viewMode === 'table'"
@@ -110,7 +110,7 @@
                 />
               </div>
 
-              <UsersPagination
+              <Pagination
                 :page="page"
                 :limit="limit"
                 :count="users.length"
@@ -139,15 +139,15 @@
     } from 'primevue';
     import { useConfirm, useToast } from 'primevue'
     import CreateUserDrawer from '@/components/users/CreateUserDrawer.vue'
-    import TableActions from '@/components/layout/table/TableActions.vue'
-    import UserCard from '@/components/users/UserCard.vue'
+    import TableActions from '@/components/table/TableActions.vue'
+    import StatusBadge from '@/components/table/StatusBadge.vue'
+    import UserCard from '@/components/cards/UserCard.vue'
     import UserIdentity from '@/components/users/UserIdentity.vue'
     import UserRoleTags from '@/components/users/UserRoleTags.vue'
     import EmptyState from '@/components/layout/EmptyState.vue'
-    import ViewMode from '@/components/layout/buttons/ViewMode.vue'
-    import type {ViewModeType} from '@/components/layout/buttons/ViewMode.vue'
-    import UsersPagination from '@/components/users/UsersPagination.vue'
-    import StatusBadge from '@/components/layout/table/StatusBadge.vue'
+    import ViewMode from '@/components/buttons/ViewMode.vue'
+    import type {ViewModeType} from '@/components/buttons/ViewMode.vue'
+    import Pagination from '@/components/table/Pagination.vue'
     import { useRoles } from '@/composables/useRoles'
     import { useUsers } from '@/composables/useUsers'
     import { useAuthStore } from '@/stores/authStore'
