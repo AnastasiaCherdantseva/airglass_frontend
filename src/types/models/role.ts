@@ -15,3 +15,10 @@ export interface RoleFull extends Role{
     permissions: PermissionWithConditions[]
 
 }
+export interface newRole {
+    name: string
+    description:string | null
+    isActive:boolean
+    conditionIds: string[]
+
+}
