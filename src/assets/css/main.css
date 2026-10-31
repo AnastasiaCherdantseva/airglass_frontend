@@ -22,4 +22,6 @@ body, #app{
 
 :root {
   --p-tag-font-size: 0.65rem; /* или 10px, или любое нужное значение */
+  --p-selectbutton-border-radius:0.25rem !important;
+  --p-button-border-radius:0.25rem !important
 }

@@ -7,7 +7,7 @@
     </Message>
     <div
         v-else-if="showSkeleton"
-        class="flex flex-col gap-4 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm"
+        class="flex flex-col gap-4  border border-slate-200 bg-white p-4 shadow-sm"
     >
         <div v-for="i in 5" :key="i" class="flex items-center gap-4">
             <Skeleton shape="circle" size="2.5rem" />
@@ -42,7 +42,7 @@
             </div>
         </div>
         <div class="flex flex-col w-full min-w-0">
-            <div class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+            <div class="overflow-hidden rounded-sm border border-slate-200 bg-white shadow-sm">
                 <DataTable
                     v-if="viewMode === 'table'"
                     :value="roles"
@@ -86,6 +86,27 @@
                       </template>
                     </Column>
                 </DataTable>
+                <div v-else class="grid gap-4 bg-slate-50 p-4 sm:grid-cols-2 lg:grid-cols-3">
+                    <RoleCard
+                    v-for="role in roles"
+                    :key="role.id"
+                    :role="role"
+                    :roles="roles"
+                    :can-delete="canDelete(role.id)"
+                    :deleting="false"
+                    :accesses="auth.permissionCodes"
+                    @delete="confirmDelete(role)"
+                    />
+              </div>
+              <Pagination
+                :page="page"
+                :limit="limit"
+                :count="roles.length"
+                :has-next="hasNext"
+                :loading="rolesLoading"
+                @update:page="setPage"
+                @update:limit="setLimit"
+              />
             </div>
 
         </div>
@@ -95,6 +116,7 @@
 <script setup lang="ts">
     import { computed, onMounted, ref } from 'vue';
     import { useRoles } from '@/composables/useRoles'
+    import { useConfirm, useToast } from 'primevue'
     import {
       Button,
       Column,
@@ -102,16 +124,21 @@
       Message,
       Skeleton,
     } from 'primevue';
-    import StatusBadge from '@/components/layout/table/StatusBadge.vue'
-    import TagCell from '@/components/layout/table/TagCell.vue'
+    import StatusBadge from '@/components/table/StatusBadge.vue'
+    import TagCell from '@/components/table/TagCell.vue'
     import { ConditionType, Status } from '@/types/enums'
     import EmptyState from '@/components/layout/EmptyState.vue'
-    import ViewMode from '@/components/layout/buttons/ViewMode.vue'
-    import TableActions from '@/components/layout/table/TableActions.vue'
-    import type {ViewModeType} from '@/components/layout/buttons/ViewMode.vue'
+    import RoleCard from '@/components/cards/RoleCard.vue'
+    import ViewMode from '@/components/buttons/ViewMode.vue'
+    import TableActions from '@/components/table/TableActions.vue'
+    import Pagination from '@/components/table/Pagination.vue'
+    import type {ViewModeType} from '@/components/buttons/ViewMode.vue'
     import { useAuthStore } from '@/stores/authStore';
-import { getAccessTags } from '@/utils/access';
-
+    import { getAccessTags } from '@/utils/access';
+    import { RoleFull } from '@/types/models';
+    
+    const toast = useToast()
+    const confirm = useConfirm()
     const auth = useAuthStore()
     
     const viewMode = ref<ViewModeType>('table')
@@ -127,13 +154,44 @@ import { getAccessTags } from '@/utils/access';
         }
     })
     // const deletingId = null
-    const { roles, loading: rolesLoading, load: loadRoles, error, loaded } = useRoles()
+    const { roles, 
+        loading: rolesLoading, 
+        load: loadRoles, 
+        setPage,
+        setLimit,
+        error, 
+        loaded,
+        page,
+        limit,
+        hasNext, } = useRoles()
     
     const showSkeleton = computed(() => rolesLoading.value && !loaded.value)
     const isEmpty = computed(
         () => loaded.value && !error.value && roles.value.length === 0,
     )
     const showContent = computed(() => loaded.value && !error.value && roles.value.length > 0)
+
+
+    function confirmDelete(role: RoleFull): void {
+        confirm.require({
+            header: 'Удалить роль?',
+            message: `Роль «${role.name}» будет удалена и все пользователи, назначенные на нее потеряют права, которые она дает. `,
+            rejectProps: { label: 'Отмена', severity: 'secondary', outlined: true },
+            acceptProps: { label: 'Удалить', severity: 'danger' },
+            accept: async () => {
+            try {
+                toast.add({ severity: 'success', summary: 'Удаление ролей пока не доступно', life: 3000 })
+            } catch (e) {
+                toast.add({
+                severity: 'error',
+                summary: 'Не удалось удалить',
+                detail:  'Попробуйте ещё раз',
+                life: 5000,
+                })
+            }
+            },
+        })
+    }
 
     const emit = defineEmits<{ needAccess: [code: string] }>()
         onMounted(async () => {
