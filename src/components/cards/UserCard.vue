@@ -1,7 +1,7 @@
 
 <template>
   <div
-    class="flex flex-col gap-4 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm"
+    class="flex flex-col gap-4 rounded-sm border border-slate-200 bg-white p-4 shadow-sm"
   >
     <div class="flex items-start justify-between gap-2">
       <UserIdentity :user="user" />
@@ -24,10 +24,10 @@
 </template>
     
 <script setup lang="ts">
-    import TableActions from '@/components/layout/table/TableActions.vue'
+    import TableActions from '@/components/table/TableActions.vue'
     import UserIdentity from '@/components/users/UserIdentity.vue'
     import UserRoleTags from '@/components/users/UserRoleTags.vue'
-    import StatusBadge from '@/components/layout/table/StatusBadge.vue'
+    import StatusBadge from '@/components/table/StatusBadge.vue'
     import { getUserStatus } from '@/utils/user'
     import type { Role, UserFull } from '@/types/models'
     
