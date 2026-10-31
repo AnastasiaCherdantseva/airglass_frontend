@@ -7,9 +7,17 @@
         option-value="value"
         :allow-empty="false"
         aria-label="Режим отображения"
+        :pt="{
+            pcToggleButton: {
+                root: {
+                    class: 
+                        'rounded-lg'
+                },
+            },
+        }"
         >
         <template #option="{ option }">
-            <span class="flex items-center gap-2 text-sm">
+            <span class="flex items-center gap-2 text-sm ">
                 <i :class="option.icon" />
                 {{ option.label }}
             </span>
@@ -19,7 +27,7 @@
 
 <script setup lang="ts">
     import {SelectButton,} from 'primevue';
-    import { ref } from 'vue';
+    import { computed, ref } from 'vue';
 
     export type ViewModeType = 'table' | 'cards'
 
