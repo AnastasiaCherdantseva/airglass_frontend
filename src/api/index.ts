@@ -5,19 +5,19 @@ const api = axios.create({
   withCredentials: true  // для куки
 })
 api.interceptors.response.use(
-  (response) => response, // Успешные ответы пропускаем как есть
+  (response) => response,
   (error) => {
-    // Если сервер ответил с ошибкой (400, 409 и т.д.)
-    if (error.response && error.response.data) {
-      // Пытаемся достать detail (формат вашего бэкенда)
+    if (error.response?.data?.detail) {
       const detail = error.response.data.detail;
-      if (detail) {
-        // Возвращаем обычную ошибку с текстом от бэкенда
-        return Promise.reject(new Error(detail));
-      }
+      const message = Array.isArray(detail)
+        ? detail.map((d: any) => d.msg ?? String(d)).join('; ')
+        : String(detail);
+
+      const newError = new Error(message);
+      // 👇 сохраняем оригинальный detail для разбора в методах
+      (newError as any).detail = detail;
+      return Promise.reject(newError);
     }
-    
-    // Если это сетевая ошибка или detail нет — пробрасываем как есть
     return Promise.reject(error);
   }
 )
