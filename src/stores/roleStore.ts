@@ -38,18 +38,41 @@ export const useRoleStore = defineStore('role', {
                 this.roles.push(newRole)
                 return newRole
             } catch (error) {
-                if (error instanceof Error) {
-                    console.error('create role failed:', error);
+                const detail = (error as any)?.detail
+                if(detail && Array.isArray(detail) && error instanceof Error){
+                    for (const d of detail) {
+                        if (d.loc.includes('condition_ids') && d.type=='too_short'){
+                            error.message = 'Права для роли не были переданы.' 
+                        }
+                    }
                 }
                 throw error;
             }
         },
+        async delete(id: string):Promise<void>{
+            try{
+                const res = await RoleApi.delete(id);
+                if(res.status!==204) {
+                    const msg = res.statusText ?? '';
+                    throw new Error(`deleteRole failed: status - ${res.status}. ${msg}`.trim());
+                }
+                this.roles = this.roles.filter(u=> u.id!==id)
+            } catch (error) {
+                if (error instanceof Error) {
+                    console.error('deleteRole failed:', error.message);
+                }
+                throw error;
+            }
+        }
     },
     getters:{
         getByIds: (state) => (ids: string[]) =>{
             if(ids.length===0) return []
             const idSet = new Set(ids);
             return state.roles.filter(r=> idSet.has(r.id))
-        }
+        },
+        getById: (state) => (id: string) =>{
+            return state.roles.find(r=> r.id==id)
+        },
     }
 })

@@ -30,11 +30,11 @@
           <span class="text-xs text-gray-400">{{ role.description }}</span>
       </div>
   </div>
-    <div class="flex items-center justify-between text-sm">
+    <div class="text-sm">
       <StatusBadge :status="role.isActive? Status.Active : Status.Inactive" :labels="{ active: 'Активна', pending: '', inactive: 'Не активна' }" />
     </div>
-    <div class="flex items-center justify-between text-sm">
-        <TagCell :tags="getAccessTags(accesses)"/>
+    <div class="text-sm">
+        <TagCell :tags="accesses"/>
     </div>
   </div>
 </template>
@@ -44,15 +44,14 @@
     import StatusBadge from '@/components/table/StatusBadge.vue'
     import Tag from 'primevue/tag'
     import TagCell from '@/components/table/TagCell.vue'
-    import type { Role, RoleFull, UserFull } from '@/types/models'
-    import { getAccessTags } from '@/utils/access';
+    import type { RoleFull,} from '@/types/models'
     import { Status } from '@/types/enums'
     
     defineProps<{
       role: RoleFull
+      accesses: any[],
       canDelete: boolean
       deleting: boolean
-      accesses: Set<string>
     }>()
     
     const emit = defineEmits<{ (e: 'delete'): void }>()

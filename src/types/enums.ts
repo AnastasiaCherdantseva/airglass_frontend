@@ -2,6 +2,7 @@ export enum PermissionResource {
   Users = 'USERS',
   Roles = 'ROLES',
   Products = 'PRODUCTS',
+  Organizations = 'ORGANIZATIONS',
   Categories = 'CATEGORIES',
   Templates = 'TEMPLATES',
   Projects = 'PROJECTS',
@@ -18,6 +19,7 @@ export const PermissionResourceRUS: Record<PermissionResource, string> = {
   [PermissionResource.Users]: 'Пользователи',
   [PermissionResource.Roles]: 'Роли',
   [PermissionResource.Products]: 'Товары',
+  [PermissionResource.Organizations]: 'Организации',
   [PermissionResource.Categories]: 'Категории',
   [PermissionResource.Templates]: 'Шаблоны',
   [PermissionResource.Projects]: 'Проекты',
@@ -54,12 +56,13 @@ export enum PermissionZone {
 }
 
 export enum ConditionType {
-  All = 'ALL',
-  Category = 'CATEGORY',
-  Role = 'ROLE',
-  Creator = 'CREATOR',
-  Subtree = 'SUBTREE',
-  Media = 'MEDIA',
+  All = 'all',
+  Category = 'category',
+  Role = 'role',
+  Organization = 'organization',
+  Creator = 'creator',
+  Subtree = 'subtree',
+  Media = 'media',
 }
 
 // export enum PermissionEffect {

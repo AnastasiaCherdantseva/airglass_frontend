@@ -38,10 +38,10 @@ export const useAuthStore = defineStore('auth', {
                     }
                     this.hasAdminAccess = res.data.has_admin_access
                     this.permissions = Object.fromEntries(
-                    res.data.permissions.map((p) => [
-                        p.code,
-                        mapPermissionWithConditionsRES2Model(p),
-                    ]),
+                        res.data.permissions.map((p) => [
+                            p.code,
+                            mapPermissionWithConditionsRES2Model(p),
+                        ]),
                     ) as Record<string, PermissionWithConditions>;  
                     this.permissionCodes =  new Set(Object.keys(this.permissions))
                     this.isAuthenticated = true
@@ -71,6 +71,8 @@ export const useAuthStore = defineStore('auth', {
                     return perm?.conditions.find(c=>c.roleId==UUID) !== undefined
                 case ConditionType.Media:
                     return perm?.conditions.find(c=>c.mediaTypeId==UUID) !== undefined
+                case ConditionType.Creator:
+                    return perm?.conditions.find(c=>c.type==ConditionType.Creator) !== undefined
                 default:
                     return false
             }

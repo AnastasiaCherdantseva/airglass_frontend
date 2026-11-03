@@ -5,6 +5,7 @@ export function mapPermissionWithConditionsRES2Model(data:PermissionWithConditio
     return{
         id:data.id,
         code:data.code,
+        name:data.name,
         conditions: data.conditions.map(c=>({
             id:c.id,             
             permissionId:c.permission_id,

@@ -20,12 +20,18 @@
         </div>
     </div>
     <!-- Пустое состояние -->
-    <EmptyState v-else-if="isEmpty" 
-        :can-create="canCreate" 
+    <EmptyState v-else-if="isEmpty && !canCreate"
+        :can-create="canCreate"
+        :textHeader="'Пока нет доступных к показу ролей.'"
+        :canCreateText="''"
+        @create=""
+    />
+    <EmptyState v-else-if="isEmpty && canCreate"
+        :can-create="canCreate"
         :textHeader="'Собственных ролей пока нет.'"
         :canCreateText="'Создайте свою первую роль.'"
-        @create="" 
-        />
+        @create="openDrawer"
+    />
     <template v-else-if="showContent">
         <div class="flex w-full justify-between pb-2">
             <div class="flex justify-start">
@@ -38,6 +44,7 @@
                   icon="pi pi-plus"
                   size="small"
                   class="px-5! py-0!"
+                   @click="openDrawer"
                 />
             </div>
         </div>
@@ -45,7 +52,7 @@
             <div class="overflow-hidden rounded-sm border border-slate-200 bg-white shadow-sm">
                 <DataTable
                     v-if="viewMode === 'table'"
-                    :value="roles"
+                    :value="rolesWithTags"
                     data-key="id"
                     :loading="rolesLoading"
                     class="text-sm"
@@ -71,46 +78,53 @@
                       </template>
                     </Column>
                     <Column field="accesses" header="Права"  >
-                      <template #body="{  }">
-                        <TagCell :tags="getAccessTags(auth.permissionCodes)"/>
-                      </template>
+                      <template #body="{ data }">
+                            <TagCell :tags="data.tags" />
+                        </template>
                     </Column>
                     <Column field="actions" header="Действия" style="width: 100px">
                       <template #body="{ data }">
                         <TableActions
-                          :can-change="canUpdate(data.id)"
-                          :can-delete="canDelete(data.id)"
+                          :can-change="canUpdate(data)"
+                          :can-delete="canDelete(data)"
                           :delete-disabled="false"
-                          :deleting="false"
+                          :deleting="deletingId === data.id"
+                          @delete="confirmDelete(data)"
                         />
                       </template>
                     </Column>
                 </DataTable>
                 <div v-else class="grid gap-4 bg-slate-50 p-4 sm:grid-cols-2 lg:grid-cols-3">
                     <RoleCard
-                    v-for="role in roles"
+                    v-for="role in rolesWithTags"
                     :key="role.id"
                     :role="role"
+                    :accesses="role.tags"
                     :roles="roles"
-                    :can-delete="canDelete(role.id)"
-                    :deleting="false"
-                    :accesses="auth.permissionCodes"
+                    :can-delete="canDelete(role)"
+                    :deleting="deletingId === role.id"
                     @delete="confirmDelete(role)"
                     />
-              </div>
-              <Pagination
-                :page="page"
-                :limit="limit"
-                :count="roles.length"
-                :has-next="hasNext"
-                :loading="rolesLoading"
-                @update:page="setPage"
-                @update:limit="setLimit"
-              />
+                </div>
+                <Pagination
+                    :page="page"
+                    :limit="limit"
+                    :count="roles.length"
+                    :has-next="hasNext"
+                    :loading="rolesLoading"
+                    @update:page="setPage"
+                    @update:limit="setLimit"
+                />
             </div>
 
         </div>
     </template>
+    <CreateRoleDrawer
+        v-model:visible="drawerVisible"
+        :submitting="submitting"
+        :server-error="serverError"
+        @submit="handleCreate"
+        />
 </template>
 
 <script setup lang="ts">
@@ -134,8 +148,9 @@
     import Pagination from '@/components/table/Pagination.vue'
     import type {ViewModeType} from '@/components/buttons/ViewMode.vue'
     import { useAuthStore } from '@/stores/authStore';
-    import { getAccessTags } from '@/utils/access';
-    import { RoleFull } from '@/types/models';
+    import { RoleFull,newRole } from '@/types/models';
+    import CreateRoleDrawer from '@/components/forms/CreateRoleDrawer.vue'
+    import { getErrorMessage } from '@/utils/errors';
     
     const toast = useToast()
     const confirm = useConfirm()
@@ -143,34 +158,61 @@
     
     const viewMode = ref<ViewModeType>('table')
     const canCreate = computed(() => auth.can('ROLES.CREATE'))
-    const canDelete = computed(() => {
-        return (id: string) => {
-            return auth.canWithCondition('ROLES.DELETE',ConditionType.Role,id)
-        }
-    })
     const canUpdate = computed(() => {
-        return (id: string) => {
-            return auth.canWithCondition('ROLES.UPDATE',ConditionType.Role,id)
+        return (role: Pick<RoleFull, 'id' | 'ownerId'>) => {
+            if (auth.me?.id === role.ownerId) return auth.canWithCondition('ROLES.UPDATE',ConditionType.Creator)
+            return auth.canWithCondition('ROLES.UPDATE',ConditionType.Role, role.id)
         }
     })
-    // const deletingId = null
+    const canDelete = computed(() => {
+        return (role: Pick<RoleFull, 'id' | 'ownerId'>) => {
+            if (auth.me?.id === role.ownerId) return auth.canWithCondition('ROLES.DELETE',ConditionType.Creator)
+            return auth.canWithCondition('ROLES.DELETE',ConditionType.Role, role.id)
+        }
+    })
+    const drawerVisible = ref(false)
+    const submitting = ref(false)
+    const serverError = ref<string | null>(null)
     const { roles, 
         loading: rolesLoading, 
         load: loadRoles, 
         setPage,
         setLimit,
+        create,
+        remove,
         error, 
         loaded,
         page,
         limit,
-        hasNext, } = useRoles()
+        hasNext, 
+        rolesWithTags,
+        deletingId,} = useRoles()
     
     const showSkeleton = computed(() => rolesLoading.value && !loaded.value)
     const isEmpty = computed(
         () => loaded.value && !error.value && roles.value.length === 0,
     )
     const showContent = computed(() => loaded.value && !error.value && roles.value.length > 0)
-
+        function openDrawer(): void {
+        serverError.value = null
+        drawerVisible.value = true
+    }
+    async function handleCreate(payload: newRole): Promise<void> {
+        submitting.value = true
+        serverError.value = null
+        try {
+            // TODO: заменить на create(payload) из useRoles, когда будет API
+            await create(payload)
+            drawerVisible.value = false
+            if(!error.value){
+                toast.add({ severity: 'success', summary: 'Роль создана', life: 3000 })
+            }
+        } catch (e) {
+            serverError.value = getErrorMessage(e, 'Не удалось создать роль')
+        } finally {
+            submitting.value = false
+        }
+    }
 
     function confirmDelete(role: RoleFull): void {
         confirm.require({
@@ -180,7 +222,11 @@
             acceptProps: { label: 'Удалить', severity: 'danger' },
             accept: async () => {
             try {
-                toast.add({ severity: 'success', summary: 'Удаление ролей пока не доступно', life: 3000 })
+                if(role.id){
+                    await remove(role.id)
+                    toast.add({ severity: 'success', summary: 'Роль удалена', life: 3000 })
+
+                }
             } catch (e) {
                 toast.add({
                 severity: 'error',

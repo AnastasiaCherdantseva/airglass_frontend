@@ -3,6 +3,7 @@ import { PermissionConditionAllRES } from "./permissionConditions";
 interface PermissionRES {
   id: string;       
   code: string;      // min_length=1, max_length=150
+  name: string;      // min_length=1, max_length=150
 }
 
 // interface PermissionFull extends PermissionBase {

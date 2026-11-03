@@ -7,5 +7,6 @@ export const RoleApi = {
     
     getRoles: () => api.get<RoleDetailResponse[]>(path),
     create: (data:RoleCreateREQ) => api.post<RoleDetailResponse>(path,data),
+    delete: (id:string) => api.delete<void>(`${path}/${id}`),
 
 };
