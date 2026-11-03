@@ -93,65 +93,6 @@
             title="Можно выдать только те права, которые есть у вас"
           />
         </div>
-<!-- 
-        <PickList
-          :model-value="[sourceItems, target]"
-          data-key="code"
-          :show-source-controls="false"
-          :show-target-controls="false"
-          :show-source-filter="true"
-          :show-target-filter="false"
-          filter-by="codeRUS"
-          source-filter-placeholder="Поиск прав..."
-          emptyFilterMessage="Нет результатов"
-          emptyMessage="Вы не выбрали ни одно право"
-          breakpoint="840px"
-          list-style="height: 22rem"
-          :pt="pickListPt"
-          @update:model-value="onPickListChange"
-        >
-          <template #sourceheader>
-              <span class="text-sm font-medium text-slate-500">Доступные права</span>
-          </template>
-          <template #targetheader>
-            <span class="text-sm font-medium text-slate-500">Выбранные права</span>
-          </template>
-
-          <template #option="{ option }">
-            <div class="flex w-full flex-col gap-1.5">
-              <div
-                v-if="!isSelected(option) && isGroupStart(option)"
-                class="pt-1 text-xs font-semibold text-slate-800"
-              >
-                {{ option.resourceRUS}}
-              </div>
-
-              <div class="flex w-full items-center gap-2">
-                <i
-                  v-if="!isSelected(option)"
-                  class="pi pi-plus cursor-pointer text-xs text-slate-400"
-                  aria-label="Добавить право"
-                  @click.stop="add(option)"
-                />
-                <i v-else class="pi pi-bolt text-xs text-emerald-600" />
-
-                <span
-                  class="rounded-sm bg-emerald-50 px-2 py-0.5 text-xs font-medium text-emerald-700"
-                >
-                  {{ option.codeRUS }}
-                </span>
-
-                <i
-                  v-if="isSelected(option)"
-                  class="pi pi-times cursor-pointer text-xs text-slate-400 hover:text-slate-700"
-                  aria-label="Убрать право"
-                  @click.stop="remove(option)"
-                />
-              </div>
-            </div>
-          </template>
-        </PickList> -->
-
         <MyPickList
           :sourceItems="options"
           :targetItems="[]"

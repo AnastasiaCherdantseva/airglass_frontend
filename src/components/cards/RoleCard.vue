@@ -17,7 +17,6 @@
                   class="shrink-0 text-xs px-3! py-0.5!"
                   rounded 
                   />
-              <span v-if="role.ownerId ===null"> </span>
           </div>
           <TableActions
           :can-delete="canDelete"

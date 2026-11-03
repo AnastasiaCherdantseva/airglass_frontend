@@ -97,7 +97,7 @@ export function useRoles(initialLimit = 10) {
         roles.value = result
     } catch (e) {
       if (current !== requestId) return
-      error.value = getErrorMessage(e, 'Не удалось загрузить пользователей')
+      error.value = getErrorMessage(e, 'Не удалось загрузить роли')
     }finally {
       await nextTick()
       if (current === requestId) {
