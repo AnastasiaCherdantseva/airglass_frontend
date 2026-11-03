@@ -14,6 +14,7 @@ export function mapPermissionWithConditionsRES2Model(data:PermissionWithConditio
             isActive:c.is_active,
             categoryId:c.category_id,
             mediaTypeId:c.media_type_id,
+            organizationId:c.organization_id,
             roleId:c.role_id
         }))
     }

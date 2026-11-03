@@ -15,6 +15,7 @@ export interface PermissionConditionAllRES extends PermissionConditionRES {
   category_id?: string | null;
   media_type_id?: string | null;
   role_id?: string | null;
+  organization_id?: string | null;
 }
 
 // Узкие условия — одно поле обязательное

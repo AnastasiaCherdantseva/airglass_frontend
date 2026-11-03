@@ -32,7 +32,7 @@
         :canCreateText="'Создайте свою первую роль.'"
         @create="openDrawer"
     />
-    <template v-else-if="showContent">
+<template v-else-if="showContent">
         <div class="flex w-full justify-between pb-2">
             <div class="flex justify-start">
                 <ViewMode :default="viewMode" @update:modelValue="(val:ViewModeType) => viewMode=val"/>
@@ -124,12 +124,13 @@
         :submitting="submitting"
         :server-error="serverError"
         @submit="handleCreate"
-        />
+    />
 </template>
 
 <script setup lang="ts">
     import { computed, onMounted, ref } from 'vue';
     import { useRoles } from '@/composables/useRoles'
+    import { useOrganizations } from '@/composables/useOrganizations'
     import { useConfirm, useToast } from 'primevue'
     import {
       Button,
@@ -173,6 +174,7 @@
     const drawerVisible = ref(false)
     const submitting = ref(false)
     const serverError = ref<string | null>(null)
+    const {load: loadOrgs} = useOrganizations()
     const { roles, 
         loading: rolesLoading, 
         load: loadRoles, 
@@ -242,6 +244,6 @@
     const emit = defineEmits<{ needAccess: [code: string] }>()
         onMounted(async () => {
         emit('needAccess', 'ROLES.READ')
-        await Promise.all([loadRoles()])
+        await Promise.all([loadRoles(), loadOrgs()])
         })
 </script>

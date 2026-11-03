@@ -59,7 +59,7 @@ export const useAuthStore = defineStore('auth', {
         can(code: string): boolean {
             return this.permissionCodes.has(code)
         },
-        canWithCondition(code: string, type:ConditionType, UUID:string | null): boolean {
+        canWithCondition(code: string, type:ConditionType, UUID?:string | null): boolean {
             const can = this.permissionCodes.has(code)
             if (!can) return false
             const perm = this.permissions[code]
@@ -71,6 +71,8 @@ export const useAuthStore = defineStore('auth', {
                     return perm?.conditions.find(c=>c.roleId==UUID) !== undefined
                 case ConditionType.Media:
                     return perm?.conditions.find(c=>c.mediaTypeId==UUID) !== undefined
+                case ConditionType.Organization:
+                    return perm?.conditions.find(c=>c.organizationId==UUID) !== undefined
                 case ConditionType.Creator:
                     return perm?.conditions.find(c=>c.type==ConditionType.Creator) !== undefined
                 default:

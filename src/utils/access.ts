@@ -1,9 +1,8 @@
 
+import { useOrganizationStore } from '@/stores/organizationStore';
 import { useRoleStore } from '@/stores/roleStore';
 import {ConditionType, PermissionAction, PermissionActionRUS, PermissionResource, PermissionResourceRUS} from '@/types/enums'
 import { PermissionConditionAll } from '@/types/models';
-
-const useRole = useRoleStore()
 
 export function accessActionTranslater(action:string): string{
     const actionCode = action as PermissionAction;
@@ -16,16 +15,20 @@ export function accessResourseTranslater(resource:string): string{
 export function accessCodeTranslater(name:string, condition:PermissionConditionAll|null = null): string{
     if(condition==null) return name
     const conditionType = condition.type as ConditionType
+    const {roles} = useRoleStore()
+    const {organizations} = useOrganizationStore()
+
     switch(conditionType){
         case ConditionType.Category:
             return name
         case ConditionType.Role:
-            const role = useRole.getById(condition.roleId!);
+            const role = roles.find(o=>o.id==condition.roleId!);
             return `${name} с ролью "${role?.name}"`
         case ConditionType.Media:
             return name
         case ConditionType.Organization:
-            return name
+            const org = organizations.find(o=>o.id==condition.organizationId!);
+            return `${name} ("${org?.name}")`
         case ConditionType.Creator:
             return `${name} (собственные)`
         case ConditionType.Subtree:

@@ -7,8 +7,9 @@
         <InnerLeftSideBar
           title="Подразделение"
           :items="[
-            { icon: 'pi-user', text: 'Пользователи', to: '/users' },
+            { icon: 'pi-user', text: 'Пользователи', to: 'users' },
             { icon: 'pi-book', text: 'Роли и права доступа', to: '/roles' },
+            { icon: 'pi-building', text: 'Организации', to: '/organizations' },
           ]"
         />
     <router-view v-slot="{ Component }">

@@ -13,6 +13,7 @@ export interface PermissionConditionAll extends PermissionCondition {
   categoryId?: string | null;
   mediaTypeId?: string | null;
   roleId?: string | null;
+  organizationId?: string | null;
 }
 
 // Узкие условия — одно поле обязательное
