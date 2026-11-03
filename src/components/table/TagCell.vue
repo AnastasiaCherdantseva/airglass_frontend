@@ -2,6 +2,8 @@
   <div 
     ref="containerRef" 
     class="flex flex-nowrap gap-1 overflow-hidden"
+    @mouseenter="showPopover($event)"
+    @mouseleave="hidePopover"
   >
     <!-- Рендерим только теги, которые поместились -->
     <Tag
@@ -39,11 +41,22 @@
     <!-- Измеряем ширину тега "+99" -->
     <Tag value="+99" severity="secondary" class="shrink-0 text-xs px-2 py-0.5" />
   </div>
+  <Popover ref="popoverRef" class="sm:!w-[560px]">
+    <Tag
+      v-for="tag in unvisibleTags"
+      :key="tag.name"
+      :value="tag.name"
+      :severity="tag.style.toLowerCase()"
+      :icon="tag.icon"
+      class="shrink-0 text-xs px-2 py-0.5"
+    />
+</Popover>
 </template>
 
 <script setup lang="ts">
 import { ref, computed, watch, nextTick } from 'vue'
 import { useResizeObserver } from '@vueuse/core'
+import Popover from 'primevue/popover'
 import Tag from 'primevue/tag'
 
 interface TagItem {
@@ -62,6 +75,8 @@ const measureRef = ref<HTMLElement | null>(null)
 const containerWidth = ref(0)
 const tagWidths = ref<number[]>([])
 const plusTagWidth = ref(0)
+
+const popoverRef = ref<InstanceType<typeof Popover> | null>(null)
 
 // Индексы тегов, которые поместились
 const visibleIndices = ref<number[]>([])
@@ -132,4 +147,17 @@ function calculateVisible() {
 
 const visibleTags = computed(() => visibleIndices.value.map(i => props.tags[i]))
 const hiddenCount = computed(() => props.tags.length - visibleIndices.value.length)
+const unvisibleTags = computed(() => {
+  const visibleSet = new Set(visibleIndices.value)
+  return props.tags.filter((_, index) => !visibleSet.has(index))
+})
+
+function showPopover(event: MouseEvent) {
+  if (hiddenCount.value === 0) return // не показываем, если всё поместилось
+  popoverRef.value?.show(event)
+}
+
+function hidePopover() {
+  popoverRef.value?.hide()
+}
 </script>
