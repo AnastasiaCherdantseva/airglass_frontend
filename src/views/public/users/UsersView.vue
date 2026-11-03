@@ -138,7 +138,7 @@
       Skeleton,
     } from 'primevue';
     import { useConfirm, useToast } from 'primevue'
-    import CreateUserDrawer from '@/components/users/CreateUserDrawer.vue'
+    import CreateUserDrawer from '@/components/forms/CreateUserDrawer.vue'
     import TableActions from '@/components/table/TableActions.vue'
     import StatusBadge from '@/components/table/StatusBadge.vue'
     import UserCard from '@/components/cards/UserCard.vue'
