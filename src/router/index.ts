@@ -23,7 +23,7 @@ const router = createRouter({
      meta: { requiresAuth: true },
      children:[
       {
-        path: '', 
+        path: 'division', 
         name: 'usersLayout',
         component: () => import('@/views/public/users/UsersLayout.vue'),
         children:[
@@ -38,6 +38,12 @@ const router = createRouter({
                name: 'roles',
                component: () => import('@/views/public/users/RolesView.vue'),
                meta: { accessCode: 'ROLES.READ' },
+           },
+          {
+               path: '/organizations',
+               name: 'organizations',
+               component: () => import('@/views/public/users/OrganizationsView.vue'),
+               meta: { accessCode: 'ORGANIZATIONS.READ' },
            },
         ],
       },
