@@ -13,6 +13,8 @@ import { definePreset } from '@primevue/themes'
 import { useAuthStore } from '@/stores/authStore.ts' 
 import ToastService from 'primevue/toastservice'
 import ConfirmationService from 'primevue/confirmationservice'
+import Mask from 'primevue/mask';
+import Tooltip from 'primevue/tooltip';
 import { vFitChildren } from '@ozjsey/v-fit-children'
 // const EmeraldPreset = definePreset(Lara, { ... })
 
@@ -61,4 +63,6 @@ await authStore.checkAuth()
 
 app.use(router)
 app.directive('fit-children', vFitChildren)
+app.directive('mask', Mask);
+app.directive('tooltip', Tooltip);
 app.mount('#app')
