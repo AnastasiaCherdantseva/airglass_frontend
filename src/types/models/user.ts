@@ -15,4 +15,5 @@ export interface UserCreate {
     name: string
     password: string
     roleIds: string[]
+    additionalConditionIds: string[]
 }

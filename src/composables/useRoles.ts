@@ -18,7 +18,7 @@ export function useRoles(initialLimit = 10) {
   const total = computed(()=>useRole.roles.length)
   let requestId = 0
 
-  const rolesWithAssing = computed<Role[]>(()=>{
+  const rolesWithAssing = computed<RoleFull[]>(()=>{
      const canCreate = useAuth.can('USERS.CREATE');
       if (!canCreate) return [];
       const roleIds: string[] = useAuth.permissions['USERS.CREATE'].conditions.flatMap(

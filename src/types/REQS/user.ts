@@ -3,4 +3,5 @@ export interface UserCreateRequest {
   name: string
   password: string
   role_ids: string[]
+  additional_condition_ids: string[]
 }

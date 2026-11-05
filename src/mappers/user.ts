@@ -20,5 +20,6 @@ export function mapUserCreate2UserCreateRequest(data:UserCreate):UserCreateReque
         email:data.email,
         role_ids:data.roleIds,
         password:data.password,
+        additional_condition_ids:data.additionalConditionIds
     }
 }

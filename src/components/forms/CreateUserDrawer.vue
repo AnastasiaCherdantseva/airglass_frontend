@@ -3,7 +3,7 @@
   <Drawer
     :visible="visible"
     position="right"
-    class="!w-full sm:!w-[420px]"
+    class="!w-full sm:!w-[840px]"
     @update:visible="emit('update:visible', $event)"
   >
     <template #header>
@@ -11,6 +11,7 @@
     </template>
 
     <Form
+      ref="formRef"
       :key="formKey"
       v-slot="$form"
       :resolver="resolver"
@@ -70,8 +71,8 @@
           Роли <span class="text-red-500">*</span>
         </label>
         <MultiSelect
+          v-model="selectedRoleIds"
           input-id="cu-roles"
-          name="roleIds"
           :options="rolesWithAssing"
           option-label="name"
           option-value="id"
@@ -88,6 +89,20 @@
         <Message v-if="!loading && rolesWithAssing.length === 0" severity="warn" size="small">
           Вы не можете назначать роли. Создание пользователя невозможно.
         </Message>
+      </div>
+      <div class="flex flex-col gap-2">
+        <div class="flex items-center gap-2">
+          <span class="text-base font-semibold text-slate-900">Дополнительные права</span>
+          <i
+            class="pi pi-info-circle text-slate-400"
+            title="Можно выдать только те права, которые есть у вас"
+          />
+        </div>
+        <MyPickList
+          :sourceItems="options"
+          :targetItems="[]"
+          @update:target-items="(items) => additional = items"
+        />
       </div>
 
       <div class="mt-4 flex gap-3">
@@ -112,20 +127,29 @@
 </template>
 
 <script setup lang="ts">
-    import { ref, watch } from 'vue'
+    import { computed, ref, watch } from 'vue'
     import Button from 'primevue/button'
     import Drawer from 'primevue/drawer'
     import IconField from 'primevue/iconfield'
     import InputIcon from 'primevue/inputicon'
     import InputText from 'primevue/inputtext'
     import Message from 'primevue/message'
+    import MyPickList from '@/components/Any/MyPickList.vue'
     import MultiSelect from 'primevue/multiselect'
     import Password from 'primevue/password'
     import { Form } from '@primevue/forms'
     import type { FormSubmitEvent } from '@primevue/forms'
     import { resolver,} from '@/schemas/createUserSchema'
-    import type { UserCreate } from '@/types/models'
+    import type { PermissionConditionAll, UserCreate } from '@/types/models'
     import {useRoles} from '@/composables/useRoles'
+import { accessCodeTranslater, accessResourseTranslater } from '@/utils/access'
+import { PermissionAction, PermissionResource } from '@/types/enums'
+
+    interface PermissionOption {
+        key: string
+        name:string
+        groupName:string
+    }
 
     const props = defineProps<{
       visible: boolean
@@ -133,15 +157,46 @@
       serverError: string | null
     }>()
 
-    const {loading, rolesWithAssing} = useRoles()
+    const {loading, rolesWithAssing, assignablePermissions} = useRoles()
 
     const emit = defineEmits<{
     (e: 'update:visible', value: boolean): void
     (e: 'submit', value: UserCreate): void
     }>()
+    const selectedRoleIds = ref<string[]>([]);
+    const resourceOrder = Object.values(PermissionResource) as string[]
+    const actionOrder = Object.values(PermissionAction) as string[]
+    const options = computed<PermissionOption[]>(() => {
+      // Какие условия уже есть в выбранных ролях
+      const usedConditionIds = new Set(
+        selectedRoleIds.value.flatMap(roleId => {
+          const role = rolesWithAssing.value.find(r => r.id === roleId)
+          return role?.permissions.flatMap(p => p.conditions.map(c => c.id)) ?? []
+        }),
+      )
+      
+      return assignablePermissions.value
+        .flatMap(p => {
+          const free = p.conditions.filter(c => !usedConditionIds.has(c.id))
+          if (free.length === 0) return []
+          const [resource = ''] = p.code.split('.')
+          return free.map(c => ({
+            key: c.id,
+            name: accessCodeTranslater(p.name, c),
+            groupName: accessResourseTranslater(resource),
+          }))
+        })
+        .sort(
+          (a, b) =>
+          resourceOrder.indexOf(a.groupName) - resourceOrder.indexOf(b.groupName) ||
+          actionOrder.indexOf(a.name) - actionOrder.indexOf(b.name),
+        )
+    })
+    const additional = ref<PermissionOption[]>([])
+
 
     const formKey = ref(0)
-    const initialValues: UserCreate = { email: '', name: '', password: '', roleIds: [] }
+    const initialValues: UserCreate = { email: '', name: '', password: '', roleIds: [], additionalConditionIds:[] }
 
     // Сбрасываем форму при каждом открытии
     watch(
@@ -155,7 +210,14 @@
       if (!event.valid) return;
 
     // Приводим values к вашему типу
-      const data = event.values as UserCreate;
+      const formData = event.values ;
+      const data = {
+          'email':formData.email,
+          'name':formData.name,
+          'password':formData.password,
+          'roleIds':selectedRoleIds.value,
+          'additionalConditionIds': additional.value.map(a=>a.key)
+      } as UserCreate
       emit('submit', data)
     }
 </script>

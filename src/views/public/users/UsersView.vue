@@ -153,6 +153,7 @@
     import { useAuthStore } from '@/stores/authStore'
     import type { UserCreate, UserFull } from '@/types/models'
     import { getUserStatus } from '@/utils/user'
+import { useOrganizations } from '@/composables/useOrganizations';
     
     const auth = useAuthStore()
     const toast = useToast()
@@ -174,6 +175,7 @@
     } = useUsers(10)
     
     const { roles, load: loadRoles} = useRoles()
+    const { load: loadOrgs} = useOrganizations()
     
     const viewMode = ref<ViewModeType>('table')
     
@@ -238,6 +240,6 @@
     const emit = defineEmits<{ needAccess: [code: string] }>()
     onMounted(async () => {
       emit('needAccess', 'USERS.READ')
-      await Promise.all([loadUsers(), loadRoles()])
+      await Promise.all([loadUsers(), loadRoles(), loadOrgs()])
     })
 </script>

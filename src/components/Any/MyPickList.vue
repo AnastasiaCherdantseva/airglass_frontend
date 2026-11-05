@@ -113,11 +113,10 @@ import PickList from 'primevue/picklist'
         (e: 'update:targetItems', items: Option[]): void
     }>()
 
-    const allOptions = ref<Option[]>([
-    ...props.sourceItems,
-    ...props.targetItems,
-    ]
-)
+    const allOptions = computed<Option[]>(() => [
+  ...props.sourceItems,
+  ...props.targetItems,
+])
 
     const selectedKeys = ref<Set<string>>(
     new Set(props.targetItems.map(o => o.key)),

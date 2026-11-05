@@ -18,7 +18,7 @@ export const resolver= (options: { values: Record<string, any> }) => {
   if (!values.password || values.password.length<8) {
     errors.password = [{ message: 'Минимум 8 символов' }];
   }
-  if (!values.roleIds || values.password.length<1) {
+  if (!values.roleIds || values.roleIds.length===0) {
     errors.roleIds = [{ message: 'Выберите хотя бы одну роль' }];
   }
   if (!values.name) {
