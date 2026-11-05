@@ -10,6 +10,7 @@ export const AuthApi = {
     loginByEmail: (data:AuthLoginEmailRequest) => api.post<UserResponse>(`${path}/login/email`,
         data
     ),
+    logout: () => api.post<void>(`${path}/logout`,),
     getMe: () => api.get<MeResponse>(`${path}/me`),
 
 };

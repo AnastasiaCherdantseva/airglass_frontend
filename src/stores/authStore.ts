@@ -79,5 +79,20 @@ export const useAuthStore = defineStore('auth', {
                     return false
             }
         },
+        async logout(): Promise<void>  {
+           try {
+                await AuthApi.logout() // опционально
+            } catch {
+            } finally {
+                this.resetAuth()
+            }
+        },
+        resetAuth() {
+            this.me = null
+            this.permissions = {}
+            this.permissionCodes = new Set()
+            this.hasAdminAccess = false
+            this.isAuthenticated = false
+        },
     }
 })

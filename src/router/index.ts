@@ -48,7 +48,14 @@ const router = createRouter({
         ],
       },
      ]
-    },{
+    },
+    {
+      path: '/admin',
+     name: 'admin',
+     component: () => import('../views/public/admin.vue'),
+     meta: { requiresAuth: true, adminAccess:true },
+    },
+    {
      path: '/helth',
      name: 'helth',
      component: () => import('../views/helth.vue'),
@@ -61,13 +68,15 @@ const router = createRouter({
 // Навигационный guard (проверка перед каждым переходом)
 router.beforeEach((to, from) => {
    const authStore = useAuthStore();
-   // Залогиненый пользователь пытается зайти на страницу для гостей
-   if (to.meta.requiresGuest && authStore.isAuthenticated) 
-      return '/home';
-
-    // Незалогиненный пользователь пытается зайти на внутренние страницы
+   // Незалогиненный пользователь пытается зайти на внутренние страницы
     if(to.meta.requiresAuth && !authStore.isAuthenticated ){  
       return { path: '/auth', query: { redirect: to.fullPath } };
+    }
+   // Залогиненый пользователь пытается зайти на страницу для гостей
+    if (to.meta.requiresGuest && authStore.isAuthenticated) 
+      return '/home';
+    if(to.meta.adminAccess && !authStore.hasAdminAccess){
+      return '/home';
     }
     if(to.meta.accessCode){
       const hasAccess = authStore.can(to.meta.accessCode as string);

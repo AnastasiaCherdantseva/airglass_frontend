@@ -17,28 +17,39 @@
         </template>
         <template #end>
             <div class="flex items-center justify-center gap-4">
+                <span>{{ AuthStore.me?.name }}</span>
                 <Avatar image="https://i.pinimg.com/736x/df/f3/ff/dff3ffca86b6309eec5272ae33b02804.jpg" size="small" shape="circle" @click="toggle" />
-                <Menu ref="menu" :model="items" popup class="w-40" />
+                <Menu ref="menu" :model="items" popup  />
             </div>
         </template>
     </Toolbar>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import { Toolbar, Avatar, Menu , Button } from 'primevue';
 import {useAuthStore} from '@/stores/authStore';
 import {PermissionResource, PermissionAction} from '@/types/enums'
 import Users from '@primeicons/vue/users';
+import router from '@/router';
 const AuthStore=useAuthStore();
-const items = ref ([
-    {
-        label:'Настройки профиля'
-    },
-    {
-        label:'Выход'
+const items = computed (()=>{
+    const sources = []
+    if(AuthStore.hasAdminAccess){
+        sources.push({
+            label:'Панель администратора'
+        })
     }
-])
+    sources.push(
+        {
+            label:'Выход',
+            command: () => {
+                handleLogout()
+            }
+    })
+    return sources
+}
+)
 
 const menu = ref();
 const toggle = (event: MouseEvent) => {
@@ -51,6 +62,10 @@ function hasPermission(
 ): boolean {
   const code = `${resource}.${action}`;
   return AuthStore.can(code)
+}
+async function handleLogout() {
+  await AuthStore.logout()
+  router.push('/auth')
 }
 
 
