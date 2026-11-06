@@ -74,3 +74,8 @@ export enum Status {
   Inactive = 'inactive',
   Pending = 'pending',
 }
+export enum ProductStatus {
+  Active = 'ACTIVE',
+  Inactive = 'ARCHIVED',
+  Discontinued = 'DISCONTINUED',
+}

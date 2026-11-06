@@ -51,9 +51,23 @@ const router = createRouter({
     },
     {
       path: '/admin',
-     name: 'admin',
-     component: () => import('../views/public/admin.vue'),
-     meta: { requiresAuth: true, adminAccess:true },
+      name: 'admin',
+      component: () => import('../views/admin/admin.vue'),
+      meta: { requiresAuth: true, adminAccess:true },
+      children:[
+        {
+          path: 'catalog',
+          name: 'catalog',
+          component: () => import('@/views/admin/catalog/catalogLayout.vue'),
+          children:[
+            {
+              path: 'categories',
+              name: 'categories',
+              component: () => import('@/views/admin/catalog/categoriesView.vue'),
+            }
+          ]
+        }
+      ]
     },
     {
      path: '/helth',

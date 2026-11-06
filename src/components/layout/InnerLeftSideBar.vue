@@ -1,5 +1,6 @@
 <template>
-  <div class="border-x border-gray-200">
+  <div class="border-x border-gray-200"
+      :class="customClasses">
     <SidebarLayout>
       <Sidebar
         id="leftSidebar"
@@ -24,6 +25,7 @@
 
             <SidebarContent>
               <SidebarMenu>
+                <template v-if="!custom ">
                 <SidebarMenuItem
                   v-for="item in items"
                   :key="item.to"
@@ -39,6 +41,13 @@
                     <span>{{ item.text }}</span>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
+              </template>
+              <template v-else>
+                <div class="w-full p-1 flex flex-col gap-2">
+                  <slot />
+
+                </div>
+              </template>
               </SidebarMenu>
             </SidebarContent>
           </SidebarPanel>
@@ -76,6 +85,8 @@ export interface SidebarNavItem {
 defineProps<{
   title: string
   items: SidebarNavItem[]
+  custom?:boolean
+  customClasses?: string
 }>()
 
 const open = defineModel<boolean>('open', { default: true })

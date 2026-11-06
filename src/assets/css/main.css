@@ -25,3 +25,7 @@ body, #app{
   --p-selectbutton-border-radius:0.25rem !important;
   --p-button-border-radius:0.25rem !important
 }
+
+.p-sidebar[data-state="collapsed"] .p-sidebar-menu-item .p-treeselect {
+  display: none;
+}

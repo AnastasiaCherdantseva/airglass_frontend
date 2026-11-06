@@ -37,7 +37,10 @@ const items = computed (()=>{
     const sources = []
     if(AuthStore.hasAdminAccess){
         sources.push({
-            label:'Панель администратора'
+            label:'Панель администратора',
+            command: () => {
+                handleAdmin()
+            }
         })
     }
     sources.push(
@@ -66,6 +69,9 @@ function hasPermission(
 async function handleLogout() {
   await AuthStore.logout()
   router.push('/auth')
+}
+async function handleAdmin() {
+  router.push('/admin')
 }
 
 
