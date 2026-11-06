@@ -30,7 +30,7 @@ yarn-error.log*
 *.swo
 .env
 
-/src/assests/images
+/src/assets/images*
 
 Dockerfile
 Dockerfile.prod
