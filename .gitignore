@@ -28,9 +28,9 @@ yarn-error.log*
 .idea/
 *.swp
 *.swo
-
 .env
 
+/src/assests/images
 
 Dockerfile
 Dockerfile.prod
