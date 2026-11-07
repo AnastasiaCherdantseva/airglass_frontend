@@ -63,7 +63,7 @@ const router = createRouter({
             {
               path: 'categories',
               name: 'categories',
-              component: () => import('@/views/admin/catalog/categoriesView.vue'),
+              component: () => import('@/views/admin/catalog/categoryView.vue'),
             }
           ]
         }

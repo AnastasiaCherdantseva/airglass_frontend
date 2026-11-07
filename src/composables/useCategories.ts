@@ -3,8 +3,9 @@ import type { Category} from '@/types/models'
 import { getErrorMessage } from '@/utils/errors'
 import { useCategoryStore } from '@/stores/categoryStore'
 
-export function useOrganizations(initialLimit = 10) {
+export function useCategories(initialLimit = 10) {
   const categories = ref<Category[]>([])
+  const selectedcategories = ref<Category[]>([])
   const loading = ref(false)
   const loaded = ref(false)
   const error = ref<string | null>(null)
@@ -46,6 +47,13 @@ export function useOrganizations(initialLimit = 10) {
       }
     }
   }
+  function setSelected(cats:Category[]){
+    selectedcategories.value = cats
+  }
+  function getSelected(){
+    return selectedcategories.value
+  }
+
 
   return { 
     categories, 
@@ -59,5 +67,7 @@ export function useOrganizations(initialLimit = 10) {
     page,
     limit,
     deletingId,
+    setSelected,
+    getSelected
      }
 }
