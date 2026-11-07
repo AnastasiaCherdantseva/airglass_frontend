@@ -31,6 +31,7 @@ yarn-error.log*
 .env
 
 /public/images*
+/src/views/helth.vue
 
 Dockerfile
 Dockerfile.prod
