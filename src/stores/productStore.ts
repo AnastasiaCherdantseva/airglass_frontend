@@ -3,7 +3,7 @@ import { Category, Product,  } from '@/types/models';
 import { ProductStatus } from '@/types/enums';
 
 
-export const useCategoryStore = defineStore('categories', {
+export const useProductStore = defineStore('products', {
     state: () => ({
         products: [] as Product[],
     }),
