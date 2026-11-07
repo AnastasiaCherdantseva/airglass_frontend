@@ -1,4 +1,4 @@
-export interface CategoryMedia {
+export interface Media {
     id: string
     storageKey: string
     originalFilename: string

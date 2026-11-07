@@ -1,4 +1,4 @@
-import { CategoryMediaRes } from "./media"
+import { MediaRes } from "./media"
 
 export interface CategoryRes{
     id: string
@@ -12,5 +12,5 @@ export interface CategoryRes{
     updated_at: Date
     attributes_ids: string[]
     usage_role_ids: string[]
-    media_data: CategoryMediaRes | null
+    media_data: MediaRes | null
 }

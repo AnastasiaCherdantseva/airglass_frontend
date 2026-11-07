@@ -1,4 +1,4 @@
-export interface CategoryMediaRes{
+export interface MediaRes{
      id: string
     storage_key: string
     original_filename: string

@@ -1,4 +1,4 @@
-import { CategoryMedia } from "./media"
+import { Media } from "./media"
 
 export interface Category{
     id:string
@@ -12,5 +12,5 @@ export interface Category{
     updatedAt: Date
     attributeIds:string[]
     usageRoleIds:string[]
-    mediaData:CategoryMedia| null
+    mediaData:Media| null
 }

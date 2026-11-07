@@ -1,4 +1,5 @@
 import { ProductStatus } from "../enums"
+import { Media } from "./media"
 
 export interface ProductAtribute{
     id:string
@@ -10,11 +11,16 @@ export interface ProductAtribute{
 export interface Product {
     id:string,
     name:string,
-    categoryId?:string
+    categoryId:string
     unitId:string
+    description:string|null
+    usageRoleIds:string[]
+    supplierIds:string[]
+    variantsCount: number
+    minPrice:number | null
     isActive:boolean
     status: ProductStatus
-    attributeIds:string[]
+    mediaData:Media| null
 }
 
 export interface ProductVariant{
