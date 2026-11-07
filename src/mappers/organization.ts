@@ -8,7 +8,7 @@ export function mapOrganizationRES2Organization(data:OrganizationRES):Organizati
         inn:data.inn,
         address:data.address,
         ownerId:data.owner_id,
-        createdAt:data.created_at,
-        updatedAt:data.updated_at,
+        createdAt: new Date(data.created_at), 
+        updatedAt: new Date(data.updated_at),
     }
 }

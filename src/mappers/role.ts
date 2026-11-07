@@ -11,8 +11,8 @@ export function mapRoleResponse2RoleFull(data:RoleDetailResponse):RoleFull{
         isActive: data.is_active,
         isSystem: data.is_system,
         ownerId:data.owner_id,
-        createdAt:data.created_at,
-        updatedAt:data.updated_at,
+        createdAt: new Date(data.created_at), 
+        updatedAt: new Date(data.updated_at),
         permissions: data.permissions.map(p=>mapPermissionWithConditionsRES2Model(p))
     }
 }
